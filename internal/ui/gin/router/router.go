@@ -1,6 +1,7 @@
 package router
 
 import (
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	spec "github.com/khedhrije/podcaster-search-api/deployments/swagger"
 	"github.com/khedhrije/podcaster-search-api/internal/configuration"
@@ -14,6 +15,8 @@ import (
 func CreateRouter(handler handlers.Search) *gin.Engine {
 	// Initialize a new Gin router without any middleware by default.
 	r := gin.New()
+	r.Use(cors.Default())
+	r.GET("/health", health())
 
 	// Configure Swagger documentation URL based on the environment.
 	if configuration.Config.Env == "dev" {
@@ -30,10 +33,10 @@ func CreateRouter(handler handlers.Search) *gin.Engine {
 	//private.Use(TokenValidatorMiddleware())
 	{
 		// Routes for managing walls.
-		walls := private.Group("/search")
+		search := private.Group("/search")
 		{
-			walls.GET("/programs/", handler.Programs())
-			walls.GET("/programs/:id", handler.ProgramByID())
+			search.GET("/programs/", handler.Programs())
+			search.GET("/programs/:id", handler.ProgramByID())
 		}
 	}
 	// Return the configured router.

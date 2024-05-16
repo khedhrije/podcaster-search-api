@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/rs/zerolog/log"
 	"net/http"
 )
 
@@ -40,16 +41,18 @@ func (handler searchHandler) ProgramByID() gin.HandlerFunc {
 // @Produce json
 // @Success 200 {string} string "ok"
 // @Failure 500 {object} pkg.ErrorJSON
-// @Router /private/search/programs [get]
+// @Router /private/search/programs/ [get]
 //
 // @Security Bearer-APIKey || Bearer-JWT
 func (handler searchHandler) Programs() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		programs, err := handler.searchApi.Programs(c)
 		if err != nil {
+			log.Error().Err(err).Msg("could not search programs")
 			c.JSON(http.StatusInternalServerError, err)
 			return
 		}
+
 		c.JSON(http.StatusOK, programs)
 		return
 	}
