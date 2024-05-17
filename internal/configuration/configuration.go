@@ -27,6 +27,7 @@ type AppConfig struct {
 	DocsAddress   string      // Address for API documentation
 	CacheConfig   CacheConfig // Configuration settings for caching
 	Elasticsearch SearchEngineConfig
+	AccountApi    AccountApi
 }
 
 // CacheConfig defines the configuration for cache connections.
@@ -39,6 +40,10 @@ type SearchEngineConfig struct {
 	URL      string
 	User     string
 	Password string
+}
+
+type AccountApi struct {
+	BaseURL string
 }
 
 // loadFromEnv loads configuration settings from environment variables and returns an AppConfig instance.
@@ -59,6 +64,9 @@ func loadFromEnv() *AppConfig {
 			URL:      viper.GetString("ES_URL"),
 			User:     viper.GetString("ES_USER"),
 			Password: viper.GetString("ES_PASSWORD"),
+		},
+		AccountApi: AccountApi{
+			BaseURL: viper.GetString("ACCOUNT-API-URL"),
 		},
 	}
 }
